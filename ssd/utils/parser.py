@@ -1,5 +1,5 @@
 import xml.etree.ElementTree
-from Annotation import *
+import numpy as np
 
 class AnnotationParser:
     def __init__(self, class_labels=None, enable_difficult=True, enable_bndbox=True, enable_pose=True):
