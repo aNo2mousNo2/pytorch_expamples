@@ -69,7 +69,7 @@ def nearest(t_bboxes, dboxes):
     return conf
 
 def max_iou_idx(t_bboxes, dboxes):
-    iou = iou(t_bboxes, dboxes)
+    iou = get_iou(t_bboxes, dboxes)
     _, top_bbox_idx = iou.max(0)
     return top_bbox_idx
 
@@ -83,7 +83,7 @@ def diff(t_bboxes, dboxes):
     dwh = torch.log(r) * 5
     return torch.cat([dcx, dxy, dwh], 1)
 
-def iou(b1, b2):
+def get_iou(b1, b2):
     """
     b1, b2: (x_min, y_min, x_max, y_max) normilized
     """
@@ -99,8 +99,8 @@ def area(b):
 def intersect(b1, b2):
     num_b1 = b1.size(0)
     num_b2 = b2.size(0)
-    min = torch.max(b1[:, :2].unsqueeze(1).expand(b1, b2, 2), b2[:, :2].unsqueeze(0).expand(num_b1, num_b2, 2))
-    max = torch.min(b1[:, 2:].unsqueeze(1).expand(b1, b2, 2), b2[:, 2:].unsqueeze(0).expand(num_b1, num_b2, 2))
+    min = torch.max(b1[:, :2].unsqueeze(1).expand(num_b1, num_b2, 2), b2[:, :2].unsqueeze(0).expand(num_b1, num_b2, 2))
+    max = torch.min(b1[:, 2:].unsqueeze(1).expand(num_b1, num_b2, 2), b2[:, 2:].unsqueeze(0).expand(num_b1, num_b2, 2))
     wh = torch.clamp((max - min), min=0)
     return wh[:, :, 0] * wh[:, :, 1]
 

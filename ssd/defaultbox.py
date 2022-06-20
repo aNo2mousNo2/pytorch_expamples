@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import itertools
 
        
@@ -20,7 +21,7 @@ def get_dboxes():
         for c, s in itertools.product(centers, s):
             dboxes.append(np.concatenate([c, s]))
     
-    return dboxes
+    return torch.Tensor(dboxes).view(-1, 4)
 
 def get_center_coords(step):
     centers = []
