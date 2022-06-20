@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
-from defaultbox import get_dboxes
+from defaultbox import DBox
 import numpy as np
 
 class SSD(nn.Module):
@@ -16,7 +16,7 @@ class SSD(nn.Module):
         self.l2norm = L2Norm()
         self.location = Location()
         self.confidence = Confidence(num_classes)
-        self.dboxes = get_dboxes()
+        self.dboxes = DBox()
     
     def forward(self, x):
         s1, s2 = self.vgg(x)
@@ -24,7 +24,7 @@ class SSD(nn.Module):
         loc = self.location(s1, s2, s3, s4, s5, s6)
         conf = self.confidence(s1, s2, s3, s4, s5, s6)
 
-        return loc, conf, self.dboxes
+        return loc, conf, self.dboxes.create(img_size=(300, 300))
 
 
 

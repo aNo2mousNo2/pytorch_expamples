@@ -22,13 +22,13 @@ class MultiBoxLoss(nn.Module):
         conf = []
         loc = []
         for idx in range(batch_size):
-            target_bboxes = target_bboxes[idx].to(self.device)
-            target_labels = target_labels[idx].to(self.device)
+            tb = target_bboxes[idx].to(self.device)
+            tl = target_labels[idx].to(self.device)
             dboxes = dboxes.to(self.device)
 
-            i = max_iou_idx(target_bboxes, dboxes)
-            conf.append(target_labels[i])
-            loc.append(diff(target_bboxes[i], dboxes))
+            i = max_iou_idx(tb, dboxes)
+            conf.append(tl)
+            loc.append(diff(tb, dboxes))
         
         mask = conf > 0
         mask = mask.unsqueeze(mask.dim()).expand_as(loc_data)
@@ -81,7 +81,7 @@ def diff(t_bboxes, dboxes):
     dxy = (diff[:, 1] + diff[:, 3]) * 0.5 * 10 / d_size[:, 1]
     r = t_size / d_size
     dwh = torch.log(r) * 5
-    return torch.cat([dcx, dxy, dwh], 1)
+    return torch.cat([dcx.unsqueeze(1), dxy.unsqueeze(1), dwh], 1)
 
 def get_iou(b1, b2):
     """
