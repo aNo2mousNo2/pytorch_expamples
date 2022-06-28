@@ -50,7 +50,7 @@ class Trainer:
                         continue
 
                 for images, bboxes, labels in self.dataloader_dict[phase]:
-                    images = images.permute(0, 3, 1, 2)
+                    # images = images.permute(0, 3, 1, 2)
                     images = images.to(device)
                     bboxes = [box.to(device) for box in bboxes]
                     labels = [l.to(device) for l in labels]

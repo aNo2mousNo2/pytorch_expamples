@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
 from defaultbox import DBox
-import numpy as np
+from torch.autograd import Function
 
 class SSD(nn.Module):
     def __init__(self, num_classes=21):
@@ -155,3 +155,10 @@ class L2Norm(nn.Module):
         weights = self.weight.unsqueeze(0).unsqueeze(2).unsqueeze(3).expand_as(x)
         return weights * x
 
+class Detect(Function):
+    def __init__(self, conf_thresh=0.01, top_k=200, nms_thresh=0.45):
+        super().__init__()
+        self.softmax = nn.Softmax(dim=-1)
+        self.conf_thresh = conf_thresh
+        self.top_k = top_k
+        self.nms_thresh = nms_thresh
